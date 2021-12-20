@@ -1,6 +1,8 @@
-###persona
+###persona project 
+
 ##task1
-##q1
+
+#1.importing data file and reviewing general information
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -10,41 +12,50 @@ df.tail()
 df.shape
 df.info()
 df.describe().T
-##q2
+
+#2.Unique prices and their frequencies 
 df["SOURCE"].nunique()
 df["SOURCE"].value_counts()
-##q3
+
+#3.Number of unique prices
 df["PRICE"].nunique()
-##q4
+
+#4.Number of sales on each unnique prices
 df["PRICE"].value_counts()
-#q5
+
+#5.Number of sales in each country 
 df["COUNTRY"].value_counts()
-##q6
+
+#6.Earnings from sales in each country 
 total_sales = df.groupby("COUNTRY")["PRICE"].sum()
-##q7
+
+#7.Number of sales accourding to source 
 sales_per_source = df["SOURCE"].value_counts()
-##q8
+
+#8.Average prices by countries
 av_price_country = pd.DataFrame({"AV_PRICE": df.groupby("COUNTRY")["PRICE"].mean()})
-##q9
+
+#9.Average prices by the type of sources
 av_price_source = pd.DataFrame({"AV_PRICE": df.groupby("SOURCE")["PRICE"].mean()})
-##q10
+
+#10.Average prices by country and source
 pd.DataFrame({"AV_PRICE": df.groupby(["COUNTRY", "SOURCE"])["PRICE"].mean()})
 
-###task2
+###task2: Total earnings by country, source, sex, age
 agg_df = df.groupby(["COUNTRY", "SOURCE", "SEX", "AGE"]).agg({"PRICE": "sum"})
 
-###task3
+###task3: Sorting the previous output by price in descending order
 agg_df = agg_df.sort_values("PRICE", ascending = False)
 
-###task4
+###task4: Converting the index to variable names 
 agg_df = agg_df.reset_index()
 agg_df.head()
 
-###task5
+###task5: Converting the age variable to categorical variable and add to the agg_df
 agg_df["AGE_CAT"] = pd.cut(agg_df["AGE"], bins = [0, 18, 24, 35, 46, 61],
                            labels=["0_18", "19_23", "25_34", "35_46", "47_61"])
 
-###task6
+###task6: Defining persona(level based customers)
 agg_df["customers_level_based"] = [agg_df["COUNTRY"][i].upper() + "_" + agg_df["SOURCE"][i].upper() + "_" +\
                                    agg_df["SEX"][i].upper() + "_" + str(agg_df["AGE_CAT"][i]) for i in range(len(agg_df))]
 
@@ -53,7 +64,7 @@ agg_df = pd.DataFrame({"customers_level_based": agg_df["customers_level_based"],
 
 agg_df.groupby("customers_level_based").agg({"PRICE": "mean"})
 
-###task7
+###task7: Segmentation of persona
 agg_df = pd.DataFrame({"customers_level_based": agg_df["customers_level_based"],
                        "PRICE": agg_df["PRICE"],
                        "SEGMENT": pd.qcut(agg_df["PRICE"], 4, ["D", "C", "B", "A"])})
@@ -74,59 +85,3 @@ agg_df[agg_df["customers_level_based"]==new_user2].agg({"SEGMENT": "max", "PRICE
 
 
 
-
-
-
-
-
-
-
-
-
-
-###task6
-#dilara kod
-agg_df["customers_level_based"]=[(i[0]+""+i[1]+""+i[2]+"_"+i[5]).upper() for i in agg_df.values]
-#hamit kod
-[f"{agg_df['COUNTRY'][i].upper()}{agg_df['SOURCE'][i].upper()}\
-{agg_df['SEX'][i].upper()}_{agg_df['AGE_CAT'][i].upper()}" for i in range(len(agg_df))]
-#sevval
-col_names = ["COUNTRY", "SOURCE", "SEX", "AGE_CAT"]
-agg_df[col_names]
-agg_df["customers_level_based"] = ["_".join(row).upper() for row in agg_df[col_names].values]
-agg_df
-#tugrul kod
-new_df = pd.DataFrame([agg_df["COUNTRY"][i].upper() + "" + agg_df["SOURCE"][i].upper() + "" + agg_df["SEX"][
-    i].upper() + "_" + str(agg_df["AGE_CAT"][i]) for i in range(len(agg_df))])
-#mehmet
-pd.DataFrame(["_".join(col).upper() for col in agg_df[col_names].values])
-#hamit2
-A=[]
-[A.append(f"{agg_df['COUNTRY'][i].upper()}{agg_df['SOURCE'][i].upper()}\
-{agg_df['SEX'][i].upper()}_{agg_df['AGE_CAT'][i].upper()}") for i in range(len(agg_df))]
-######hata: can only concatenate str (not "float") to str
-
-###
-
-df = pd.read_csv('titanic.csv')
-import numpy as np
-import pandas as pd
-import seaborn as sns
-from matplotlib import pyplot as plt
-
-
-def cat_summary(dataframe, col_name, title=False, plot=False):
-    print(pd.DataFrame({col_name: dataframe[col_name].value_counts(),
-                        "Ratio": 100 * dataframe[col_name].value_counts() / len(dataframe)}))
-    if plot:
-        if title:
-            sns.countplot(x=dataframe[col_name], data=dataframe)
-            plt.title(col_name)
-            plt.show()
-        else:
-            sns.countplot(x=dataframe[col_name], data=dataframe)
-            plt.show()
-
-
-
-cat_summary(df, col_name="Embarked", title=False, plot=True)
