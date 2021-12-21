@@ -1,4 +1,4 @@
-# Forecasting average return on new customers by persona analysis
+# Forecasting average return on new customers with persona analysis
 
 A game company wants to forecast average profit for new customers by observing 
 some demographic information of their customers. To do so, the company wants to 
